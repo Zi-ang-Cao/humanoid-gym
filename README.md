@@ -8,13 +8,15 @@
 
   <a href="https://github.com/zlw21gxy">Xinyang Gu*</a>, 
   <a href="https://wangyenjen.github.io/">Yen-Jen Wang*</a>,
-  <a href="http://people.iiis.tsinghua.edu.cn/~jychen/">Jianyu Chen</a>
+  <a href="http://people.iiis.tsinghua.edu.cn/~jychen/">Jianyu Chen†</a>
+
+  *: Equal contribution. Project Co-lead., †: Corresponding Author.
 
 ![Demo](./images/demo.gif)
 
 Humanoid-Gym is an easy-to-use reinforcement learning (RL) framework based on Nvidia Isaac Gym, designed to train locomotion skills for humanoid robots, emphasizing zero-shot transfer from simulation to the real-world environment. Humanoid-Gym also integrates a sim-to-sim framework from Isaac Gym to Mujoco that allows users to verify the trained policies in different physical simulations to ensure the robustness and generalization of the policies.
 
-This codebase is verified by RobotEra's XBot-S (1.2 meter tall humanoid robot) and XBot-L (1.65 meter tall humanoid robot) in real-world environment with zero-shot sim-to-real transfer.
+This codebase is verified by RobotEra's XBot-S (1.2-meter tall humanoid robot) and XBot-L (1.65-meter tall humanoid robot) in a real-world environment with zero-shot sim-to-real transfer.
 
 ## Features
 
@@ -32,13 +34,29 @@ We also share our sim2sim pipeline, which allows you to transfer trained policie
 Our simulator settings, particularly with Mujoco, are finely tuned to closely mimic real-world scenarios. This careful calibration ensures that the performances in both simulated and real-world environments are closely aligned. This improvement makes our simulations more trustworthy and enhances our confidence in their applicability to real-world scenarios.
 
 
-### 3. Denoising World Model Learning (Coming Soon!)
+### 3. Denoising World Model Learning
+#### Robotics: Science and Systems (RSS), 2024 (Best Paper Award Finalist)
+<a href="https://enriquecoronadozu.github.io/rssproceedings2024/rss20/p058.pdf"><strong>Paper</strong></a>
+|
+<a href="https://x.com/wangyenjen/status/1792741940087394540"><strong>Twitter</strong></a>
+
+<a href="https://github.com/zlw21gxy">Xinyang Gu*</a>, 
+<a href="https://wangyenjen.github.io/">Yen-Jen Wang*</a>,
+Xiang Zhu*, Chengming Shi*, Yanjiang Guo, Yichen Liu,
+<a href="http://people.iiis.tsinghua.edu.cn/~jychen/">Jianyu Chen†</a>
+
+*: Equal contribution. Project Co-lead., †: Corresponding Author.
+
 Denoising World Model Learning(DWL) presents an advanced sim-to-real framework that integrates state estimation and system identification. This dual-method approach ensures the robot's learning and adaptation are both practical and effective in real-world contexts.
 
 - **Enhanced Sim-to-real Adaptability**: Techniques to optimize the robot's transition from simulated to real environments.
 - **Improved State Estimation Capabilities**: Advanced tools for precise and reliable state analysis.
 
+### Perceptive Locomotion Learning for Humanoid Robots (Coming Soon!)
+<a href="https://x.com/roboterax/status/1798694054374564010"><strong>Twitter</strong></a>
+
 ### Dexterous Hand Manipulation (Coming Soon!)
+<a href="https://x.com/roboterax/status/1791349763448938924"><strong>Twitter</strong></a>
 
 ## Installation
 
@@ -63,6 +81,7 @@ Denoising World Model Learning(DWL) presents an advanced sim-to-real framework t
 #### Examples
 
 ```bash
+# Under the directory humanoid-gym/humanoid
 # Launching PPO Policy Training for 'v1' Across 4096 Environments
 # This command initiates the PPO algorithm-based training for the humanoid task.
 python scripts/train.py --task=humanoid_ppo --run_name v1 --headless --num_envs 4096
@@ -74,6 +93,7 @@ python scripts/play.py --task=humanoid_ppo --run_name v1
 
 # Implementing Simulation-to-Simulation Model Transformation
 # This command facilitates a sim-to-sim transformation using exported 'v1' policy.
+# You have to run play.py first to get the JIT model and use it with sim2sim.py
 python scripts/sim2sim.py --load_model /path/to/logs/XBot_ppo/exported/policies/policy_1.pt
 
 # Run our trained policy
@@ -185,6 +205,14 @@ Please cite the following if you use this code or parts of it:
   journal={arXiv preprint arXiv:2404.05695},
   year={2024}
 }
+
+@inproceedings{gu2024advancing,
+  title={Advancing Humanoid Locomotion: Mastering Challenging Terrains with Denoising World Model Learning},
+  author={Gu, Xinyang and Wang, Yen-Jen and Zhu, Xiang and Shi, Chengming and Guo, Yanjiang and Liu, Yichen and Chen, Jianyu},
+  booktitle={Robotics: Science and Systems},
+  year={2024},
+  url={https://enriquecoronadozu.github.io/rssproceedings2024/rss20/p058.pdf}
+}
 ```
 
 ## Acknowledgment
@@ -193,4 +221,4 @@ The implementation of Humanoid-Gym relies on resources from [legged_gym](https:/
 
 ## Any Questions?
 
-If you have further questions, please feel free to contact [support@robotera.com](mailto:support@robotera.com) or create an issue in this repository.
+If you have any more questions, please contact [support@robotera.com](mailto:support@robotera.com) or create an issue in this repository.
