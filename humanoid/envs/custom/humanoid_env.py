@@ -78,7 +78,7 @@ class XBotLFreeEnv(LeggedRobot):
         self.last_feet_z = 0.05
         self.feet_height = torch.zeros((self.num_envs, 2), device=self.device)
         self.reset_idx(torch.tensor(range(self.num_envs), device=self.device))
-        self.compute_observations()
+        self.compute_observations(dummy_init=True)
 
     def _push_robots(self):
         """ Random pushes the robots. Emulates an impulse by setting a randomized base velocity. 
@@ -197,7 +197,7 @@ class XBotLFreeEnv(LeggedRobot):
         return super().step(actions)
 
 
-    def compute_observations(self):
+    def compute_observations(self, dummy_init=False):
 
         phase = self._get_phase()
         self.compute_ref_state()
@@ -245,12 +245,25 @@ class XBotLFreeEnv(LeggedRobot):
 
         if self.cfg.terrain.measure_heights:
             heights = torch.clip(self.root_states[:, 2].unsqueeze(1) - 0.5 - self.measured_heights, -1, 1.) * self.obs_scales.height_measurements
-            self.privileged_obs_buf = torch.cat((self.obs_buf, heights), dim=-1)
+            self.privileged_obs_buf = torch.cat((self.privileged_obs_buf, heights), dim=-1)
+            obs_buf = torch.cat((obs_buf, heights), dim=-1)
+
+        if dummy_init:
+            return
         
-        if self.add_noise:  
-            obs_now = obs_buf.clone() + torch.randn_like(obs_buf) * self.noise_scale_vec * self.cfg.noise.noise_level
-        else:
-            obs_now = obs_buf.clone()
+        if self.add_noise:
+            desired_scale = obs_buf.shape[1]
+            noise_scales = self.cfg.noise.noise_scales
+            noise_level = self.cfg.noise.noise_level
+            noise_scales.height_measurements* noise_level * self.obs_scales.height_measurements
+            compatible_noise_scale_vec = torch.full((desired_scale,), 0.5, device=self.noise_scale_vec.device)
+
+            compatible_noise_scale_vec[:self.noise_scale_vec.shape[0]] = self.noise_scale_vec
+
+            # Add noise to the observations
+            obs_buf += (2 * torch.rand_like(obs_buf) - 1) * compatible_noise_scale_vec
+
+        obs_now = obs_buf.clone()
         self.obs_history.append(obs_now)
         self.critic_history.append(self.privileged_obs_buf)
 

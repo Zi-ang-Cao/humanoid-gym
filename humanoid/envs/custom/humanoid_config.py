@@ -39,12 +39,13 @@ class XBotLCfg(LeggedRobotCfg):
         # change the observation dim
         frame_stack = 15
         c_frame_stack = 3
-        num_single_obs = 47
+        dim_height_measurements = 187
+        num_single_obs = 47 + dim_height_measurements
         num_observations = int(frame_stack * num_single_obs)
-        single_num_privileged_obs = 73
+        single_num_privileged_obs = 73 + dim_height_measurements
         num_privileged_obs = int(c_frame_stack * single_num_privileged_obs)
-        num_actions = 12
-        num_envs = 4096
+        # num_envs = 4096
+        num_envs = 2048
         episode_length_s = 24     # episode length in seconds
         use_ref_actions = False   # speed up training by using reference actions
 
@@ -69,11 +70,11 @@ class XBotLCfg(LeggedRobotCfg):
         fix_base_link = False
 
     class terrain(LeggedRobotCfg.terrain):
-        mesh_type = 'plane'
-        # mesh_type = 'trimesh'
-        curriculum = False
+        # mesh_type = 'plane'
+        mesh_type = 'trimesh'
+        curriculum = True
         # rough terrain only:
-        measure_heights = False
+        measure_heights = True
         static_friction = 0.6
         dynamic_friction = 0.6
         terrain_length = 8.
@@ -82,7 +83,9 @@ class XBotLCfg(LeggedRobotCfg):
         num_cols = 20  # number of terrain cols (types)
         max_init_terrain_level = 10  # starting curriculum state
         # plane; obstacles; uniform; slope_up; slope_down, stair_up, stair_down
-        terrain_proportions = [0.2, 0.2, 0.4, 0.1, 0.1, 0, 0]
+        # terrain_proportions = [0.2, 0.2, 0.4, 0.1, 0.1, 0, 0]
+        terrain_proportions = [0, 0.8, 0.2, 0, 0, 0, 0]
+
         restitution = 0.
 
     class noise:
